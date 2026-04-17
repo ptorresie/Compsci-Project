@@ -1,0 +1,14 @@
+name: session22
+channels:
+- conda-forge
+dependencies:
+- python
+- numpy
+- pandas
+- matplotlib
+- numba
+- pyinstrument
+- pytorch
+- pip
+- scypi
+- math
