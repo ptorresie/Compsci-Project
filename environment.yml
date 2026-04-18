@@ -1,8 +1,8 @@
-name: session22
+name: CP2_project
 channels:
 - conda-forge
 dependencies:
-- python
+- python = 3.12
 - numpy
 - pandas
 - matplotlib
