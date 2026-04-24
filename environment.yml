@@ -1,14 +1,14 @@
 name: CP2_project
 channels:
-- conda-forge
+  - pytorch
+  - conda-forge
 dependencies:
-- python = 3.12
-- numpy
-- pandas
-- matplotlib
-- numba
-- pyinstrument
-- pytorch
-- pip
-- scypi
-- math
+  - python=3.12
+  - numpy
+  - pandas
+  - matplotlib
+  - numba
+  - pyinstrument
+  - pytorch
+  - scipy
+  - pip

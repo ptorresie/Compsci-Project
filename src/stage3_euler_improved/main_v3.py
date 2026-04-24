@@ -1,4 +1,4 @@
-from euler_improved import compute_euler_improved
+from compute_euler_improved import compute_euler_improved
 from plot_euler_improved import plot
 
 data = compute_euler_improved()

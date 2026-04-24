@@ -1,4 +1,4 @@
-from analytical3 import compute_psi
+from compute_analytical import compute_psi
 from plot_analytical import plot
 
 def main():

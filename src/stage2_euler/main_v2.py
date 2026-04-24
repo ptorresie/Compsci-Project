@@ -1,4 +1,4 @@
-from euler2 import compute_euler
+from compute_euler import compute_euler
 from plot_euler import plot
 
 data = compute_euler()
