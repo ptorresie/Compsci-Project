@@ -36,8 +36,8 @@ def test_contains_x_column():
 def test_correct_n_columns():
     df = compute_euler(get_test_data())
 
-    assert "n=1" in df.columns
-    assert "n=2" in df.columns
+    assert "n = 1" in df.columns
+    assert "n = 2" in df.columns
 
 
 # =========================
@@ -62,7 +62,7 @@ def test_initial_condition():
     df = compute_euler(get_test_data())
 
     # psi_0 = 0 → first row should be zero
-    assert abs(df["n=1"].iloc[0]) < 1e-10
+    assert abs(df["n = 1"].iloc[0]) < 1e-10
 
 
 def test_no_nan_values():
