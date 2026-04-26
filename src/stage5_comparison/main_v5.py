@@ -24,32 +24,34 @@ def run_comparison(params):
         Comparison results or None if failure
     """
 
-    status = {
-        "Analytical": True,
-        "Euler": True,
-        "Euler Improved": True,
-        "RK4": True,
-        "Comparison": True
-    }
-
     try:
-        # unpack parameters
-        n_start = params["n_start"]
-        n_end = params["n_end"]
-        n_step = params["n_step"]
-        L = params["L"]
-        h = params["h"]
-        num_steps = params["num_steps"]
-        z0 = params["z0"]
-        psi0 = params["psi0"]
+        # --- SAFE PARAMETER UNPACKING ---
+        try:
+            n_start = params["n_start"]
+            n_end = params["n_end"]
+            n_step = params["n_step"]
+            L = params["L"]
+            h = params["h"]
+            num_steps = params["num_steps"]
+            z0 = params["z0"]
+            psi0 = params["psi0"]
+        except KeyError as e:
+            print(f"Missing parameter: {e}")
+            return None
+
+        # --- LOGICAL VALIDATION ---
+        if n_step <= 0 or h <= 0 or num_steps <= 1 or L <= 0:
+            print("Invalid parameter values")
+            return None
+
+        if n_start > n_end:
+            print("Invalid n range")
+            return None
 
         n_values = np.arange(n_start, n_end + 1, n_step)
 
         # --- COMPUTE ---
         data_analytical = compute_psi(L=L, dx=h, n_values=n_values)
-        if data_analytical is None:
-            status["Analytical"] = False
-
         data_euler = compute_euler({
             "n_start": n_start,
             "n_end": n_end,
@@ -60,9 +62,6 @@ def run_comparison(params):
             "z_0": z0,
             "psi_0": psi0,
         })
-        if data_euler is None:
-            status["Euler"] = False
-
         data_euler_improved = compute_euler_improved({
             "n_start": n_start,
             "n_end": n_end,
@@ -73,9 +72,6 @@ def run_comparison(params):
             "z0": z0,
             "psi0": psi0,
         })
-        if data_euler_improved is None:
-            status["Euler Improved"] = False
-
         data_rk4 = compute_rk4({
             "n_start": n_start,
             "n_end": n_end,
@@ -86,14 +82,13 @@ def run_comparison(params):
             "z0": z0,
             "psi0": psi0,
         })
-        if data_rk4 is None:
-            status["RK4"] = False
 
-        # --- COMPARE ---
+        # --- CHECK COMPUTATIONS ---
         if any(d is None for d in [data_analytical, data_euler, data_euler_improved, data_rk4]):
-            status["Comparison"] = False
+            print("One or more methods failed. Skipping comparison.")
             return None
 
+        # --- COMPARE ---
         results = compare_methods(
             data_analytical,
             data_euler,
@@ -103,5 +98,6 @@ def run_comparison(params):
 
         return results
 
-    except Exception:
+    except Exception as e:
+        print(f"Unexpected error in run_comparison: {e}")
         return None

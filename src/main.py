@@ -1,6 +1,15 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
 from src.stage5_comparison.main_v5 import run_comparison
 
+from src.stage1_analytical.compute_analytical import compute_psi
+from src.stage2_euler.compute_euler import compute_euler
+from src.stage3_euler_improved.compute_euler_improved import compute_euler_improved
+from src.stage4_rk4.compute_rk4 import compute_rk4
 
+
+# --- SAFE INPUT FUNCTIONS ---
 def get_int(prompt):
     while True:
         try:
@@ -65,7 +74,7 @@ def main():
         "psi0": psi0
     }
 
-    # --- RUN ---
+    # --- RUN COMPARISON ---
     results = run_comparison(params)
 
     if results is None:
@@ -82,6 +91,81 @@ def main():
             print(f"    Std Error: {stats['stderr']:.6f}")
 
     print("\n=== Done ===")
+
+    # =========================
+    # 🔹 OPTIONAL PLOTTING
+    # =========================
+
+    plot_choice = input("\nDo you want to plot results? (y/n): ").lower()
+
+    if plot_choice == "y":
+        print(f"Available n values: {list(range(n_start, n_end + 1, n_step))}")
+        n_plot = get_int("Enter n value to plot: ")
+
+        # recompute all methods for plotting (clean separation)
+        n_values = np.arange(n_start, n_end + 1, n_step)
+
+        data_analytical = compute_psi(L=L, dx=h, n_values=n_values)
+
+        data_euler = compute_euler({
+            "n_start": n_start,
+            "n_end": n_end,
+            "n_step": n_step,
+            "delta_x": h,
+            "num_steps": num_steps,
+            "L": L,
+            "z_0": z0,
+            "psi_0": psi0,
+        })
+
+        data_euler_improved = compute_euler_improved({
+            "n_start": n_start,
+            "n_end": n_end,
+            "n_step": n_step,
+            "h": h,
+            "num_steps": num_steps,
+            "L": L,
+            "z0": z0,
+            "psi0": psi0,
+        })
+
+        data_rk4 = compute_rk4({
+            "n_start": n_start,
+            "n_end": n_end,
+            "n_step": n_step,
+            "h": h,
+            "num_steps": num_steps,
+            "L": L,
+            "z0": z0,
+            "psi0": psi0,
+        })
+
+        # --- PLOT ---
+        try:
+            col = f"n={n_plot}"
+
+            plt.figure(figsize=(10, 5))
+
+            plt.plot(data_analytical["x"], data_analytical[col],label="Analytical", linestyle='-', linewidth=3, color='blue')
+
+            plt.plot(data_euler["x"], data_euler[col],label="Euler", linestyle='--', marker='o', markevery=10, alpha=0.8)
+
+            plt.plot(data_euler_improved["x"], data_euler_improved[col], label="Euler Improved", linestyle='-.', marker='s', markevery=10, alpha=0.8)
+
+            plt.plot(data_rk4["x"], data_rk4[col], label="RK4", linestyle=':', marker='x', markevery=10, alpha=0.8)
+
+            plt.xlabel("x")
+            plt.ylabel("ψ(x)")
+            plt.title(f"Comparison of methods for n = {n_plot}")
+            plt.legend()
+            plt.grid(True)
+            plt.show()
+
+        except KeyError:
+            print(f"Invalid n value: n={n_plot} not found")
+
+        except Exception as e:
+            print(f"Plot error: {e}")
 
 
 if __name__ == "__main__":
