@@ -1,6 +1,6 @@
-Electron Probability Simulation — Numerical Solution of the Schrödinger Equation
+Quantum Numerical Methods Project (QNMP) — Numerical Solution of the Schrödinger Equation
 
-Executive Summary:
+Summary:
 
 This project delivers a rigorous computational study of the time‑independent Schrödinger equation for a particle in a one‑dimensional infinite potential well. It combines analytical physics** with numerical methods to compute and analyze the wave function (\psi(x)) and its associated probability density (|\psi(x)|^2).
 
@@ -23,6 +23,58 @@ The system is engineered with a clear separation of concerns: a computation laye
 
 ---
 
+## How to use
+
+Steps
+1. Clone the repository
+2. Use the environment.yml file to create an environment and activate it
+3. Execute the main.py file
+4. Input the desired parameters (Parameters are explained in the next section)
+
+---
+
+## Parameters
+
+   L (well length)
+Range: 0.5 – 10.0
+Typical: 1.0
+Defines the size of the domain [0,L]
+
+
+   n (quantum number)
+Range: 1 – 10
+Typical: 1 – 3
+Controls the energy level and number of oscillations.
+
+
+   N (number of points)
+Range: 100 – 5000
+Typical:
+
+100 – 300 → fast testing
+500 – 1500 → balanced
+2000+ → high precision
+
+Defines the discretization of the domain.
+
+
+dx (step size)
+Computed as:
+dx = L / N
+
+Typical range: 1e-2 – 1e-4
+
+
+psi (initial wave function)
+Value: 0.0
+Fixed by boundary conditions of the infinite well.
+
+phi (initial derivative)
+Range: 0.1 – 10.0
+Typical: 1.0
+
+---
+
 ## Scientific Foundation
 
 The governing equation is the time‑independent Schrödinger equation in one dimension.
@@ -38,28 +90,6 @@ This solution serves as the ground truth benchmark for all numerical methods imp
 ## System Architecture
 
 The project is organized around a staged computational pipeline combined with shared utilities and visualization tools.
-
-## Source Structure (as implemented)
-
-src/
-│
-├── inputs.py               # Defines global parameters (L, n, step size, etc.)
-├── shared_plot.py          # Common plotting utilities used across stages
-│
-├── compute_analytical.py   # Computes analytical solution ψ(x)
-├── plot_analytical.py      # Plots analytical wave function
-├── main_v1.py              # Early version of execution pipeline
-├── main.py                 # Final integrated execution script
-│
-├── stage1_analytical/      # Stage 1: Analytical solution
-├── stage2_euler/           # Stage 2: Euler method
-├── stage3_euler_improved/  # Stage 3: Improved Euler method
-├── stage4_rk4/             # Stage 4: Runge-Kutta (RK4)
-├── stage5_comparison/      # Stage 5: Method comparison
-│
-└── utils/                  # Shared computational utilities
-
-Each "stage" folder represents a step in the project development, where a specific numerical or analytical method is implemented and tested independently.
 
 ## Stage 1 — Analytical (stage1_analytical)
    Computes the exact solution of the Schrödinger equation
@@ -83,13 +113,6 @@ Each "stage" folder represents a step in the project development, where a specif
    Generates comparative plots
    Used for error and accuracy analysis
 
-## Utility Layer (utils/)
-
-Contains shared logic used across all stages:
-
-   Common mathematical helpers
-   Reusable computation logic
-   Functions to avoid code duplication
 
 ## Visualization Layer
 
