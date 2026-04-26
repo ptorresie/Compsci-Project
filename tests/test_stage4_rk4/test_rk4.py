@@ -5,6 +5,7 @@ import pytest
 from src.stage4_rk4.compute_rk4 import compute_rk4
 from src.stage4_rk4.plot_rk4 import plot
 from src.stage1_analytical.compute_analytical import compute_psi
+from src.stage2_euler.compute_euler import compute_euler
 
 
 # =========================
@@ -25,7 +26,7 @@ def get_test_data():
 
 
 # =========================
-# 🔹 TEST GROUP 1: STRUCTURE
+# TEST GROUP 1: STRUCTURE
 # =========================
 
 def test_returns_dataframe():
@@ -41,12 +42,12 @@ def test_contains_x_column():
 def test_correct_n_columns():
     df = compute_rk4(get_test_data())
 
-    assert "n = 1" in df.columns
-    assert "n = 2" in df.columns
+    assert "n=1" in df.columns
+    assert "n=2" in df.columns
 
 
 # =========================
-# 🔹 TEST GROUP 2: SHAPE
+# TEST GROUP 2: SHAPE
 # =========================
 
 def test_shape_consistency():
@@ -60,80 +61,64 @@ def test_shape_consistency():
 
 
 # =========================
-# 🔹 TEST GROUP 3: PHYSICS / STABILITY
+# TEST GROUP 3: PHYSICS / STABILITY
 # =========================
 
 def test_initial_condition():
     df = compute_rk4(get_test_data())
-
-    assert abs(df["n = 1"].iloc[0]) < 1e-10
+    assert abs(df["n=1"].iloc[0]) < 1e-10
 
 
 def test_no_nan_values():
     df = compute_rk4(get_test_data())
-
     assert not df.isnull().values.any()
 
 
 def test_values_are_finite():
     df = compute_rk4(get_test_data())
-
     assert np.isfinite(df.values).all()
 
 
 # =========================
-# 🔹 TEST GROUP 4: DOMAIN
+# TEST GROUP 4: DOMAIN
 # =========================
 
 def test_x_values_start_at_zero():
     df = compute_rk4(get_test_data())
-
     assert df["x"].iloc[0] == 0
 
 
 def test_x_values_increase():
     df = compute_rk4(get_test_data())
-
     x = df["x"].values
     assert np.all(np.diff(x) > 0)
 
 
 # =========================
-# 🔹 TEST GROUP 5: ACCURACY (MOST IMPORTANT)
+# TEST GROUP 5: ACCURACY
 # =========================
 
 def test_rk4_close_to_analytical():
-    """
-    RK4 should be very close to analytical solution
-    """
     data = get_test_data()
     L = data["L"]
-    n = 1
 
     df_rk4 = compute_rk4(data)
-    df_exact = compute_psi(L=L, dx=data["h"], n_values=np.array([n]))
+    df_exact = compute_psi(L=L, dx=data["h"], n_values=np.array([1]))
 
     psi_rk4 = df_rk4["n=1"].values
     psi_exact = df_exact["n=1"].values
 
-    # Align lengths
     min_len = min(len(psi_rk4), len(psi_exact))
-
     error = np.mean(np.abs(psi_rk4[:min_len] - psi_exact[:min_len]))
 
-    assert error < 0.1  # RK4 should be quite accurate
+    assert error < 0.1
 
 
 # =========================
-# 🔹 TEST GROUP 6: BETTER THAN EULER
+# TEST GROUP 6: COMPARISON WITH EULER
 # =========================
-
-from src.stage2_euler.compute_euler import compute_euler
 
 def test_rk4_better_than_euler():
-    """
-    RK4 should be more accurate than Euler
-    """
     data_rk4 = get_test_data()
 
     data_euler = {
@@ -149,12 +134,11 @@ def test_rk4_better_than_euler():
 
     df_rk4 = compute_rk4(data_rk4)
     df_euler = compute_euler(data_euler)
+    df_exact = compute_psi(L=data_rk4["L"], dx=data_rk4["h"], n_values=np.array([1]))
 
-    df_exact = compute_psi(L=data_rk4["L"], dx = data_rk4["h"], n_values = np.array([1]))
-
-    psi_rk4 = df_rk4["n = 1"].values
-    psi_euler = df_euler["n = 1"].values
-    psi_exact = df_exact["n = 1"].values
+    psi_rk4 = df_rk4["n=1"].values
+    psi_euler = df_euler["n=1"].values
+    psi_exact = df_exact["n=1"].values
 
     min_len = min(len(psi_rk4), len(psi_exact))
 
@@ -165,12 +149,40 @@ def test_rk4_better_than_euler():
 
 
 # =========================
-# 🔹 TEST GROUP 7: PLOT FUNCTION
+# TEST GROUP 7: ERROR HANDLING
+# =========================
+
+def test_invalid_L():
+    data = get_test_data()
+    data["L"] = -10
+
+    df = compute_rk4(data)
+    assert df is None
+
+
+def test_invalid_h():
+    data = get_test_data()
+    data["h"] = 0
+
+    df = compute_rk4(data)
+    assert df is None
+
+
+def test_invalid_n_range():
+    data = get_test_data()
+    data["n_start"] = 10
+    data["n_end"] = 1
+
+    df = compute_rk4(data)
+    assert df is None
+
+
+# =========================
+# TEST GROUP 8: PLOT FUNCTION
 # =========================
 
 def test_plot_valid_n():
     df = compute_rk4(get_test_data())
-
     plot(df, 1)
 
 

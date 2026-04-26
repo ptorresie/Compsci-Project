@@ -7,7 +7,7 @@ from src.stage2_euler.plot_euler import plot
 
 
 # =========================
-# 🔹 TEST GROUP 1: STRUCTURE
+# TEST GROUP 1: STRUCTURE
 # =========================
 
 def get_test_data():
@@ -36,12 +36,12 @@ def test_contains_x_column():
 def test_correct_n_columns():
     df = compute_euler(get_test_data())
 
-    assert "n = 1" in df.columns
-    assert "n = 2" in df.columns
+    assert "n=1" in df.columns
+    assert "n=2" in df.columns
 
 
 # =========================
-# 🔹 TEST GROUP 2: SHAPE
+# TEST GROUP 2: SHAPE
 # =========================
 
 def test_shape_consistency():
@@ -55,14 +55,13 @@ def test_shape_consistency():
 
 
 # =========================
-# 🔹 TEST GROUP 3: PHYSICS / BEHAVIOR
+# TEST GROUP 3: PHYSICS / BEHAVIOR
 # =========================
 
 def test_initial_condition():
     df = compute_euler(get_test_data())
 
-    # psi_0 = 0 → first row should be zero
-    assert abs(df["n = 1"].iloc[0]) < 1e-10
+    assert abs(df["n=1"].iloc[0]) < 1e-10
 
 
 def test_no_nan_values():
@@ -78,7 +77,7 @@ def test_values_are_finite():
 
 
 # =========================
-# 🔹 TEST GROUP 4: DOMAIN
+# TEST GROUP 4: DOMAIN
 # =========================
 
 def test_x_values_start_at_zero():
@@ -95,13 +94,41 @@ def test_x_values_increase():
 
 
 # =========================
-# 🔹 TEST GROUP 5: PLOT FUNCTION
+# TEST GROUP 5: ERROR HANDLING
+# =========================
+
+def test_invalid_L():
+    data = get_test_data()
+    data["L"] = -10
+
+    df = compute_euler(data)
+    assert df is None
+
+
+def test_invalid_delta_x():
+    data = get_test_data()
+    data["delta_x"] = 0
+
+    df = compute_euler(data)
+    assert df is None
+
+
+def test_invalid_n_range():
+    data = get_test_data()
+    data["n_start"] = 10
+    data["n_end"] = 1
+
+    df = compute_euler(data)
+    assert df is None
+
+
+# =========================
+# TEST GROUP 6: PLOT FUNCTION
 # =========================
 
 def test_plot_valid_n():
     df = compute_euler(get_test_data())
 
-    # Should NOT raise error
     plot(df, 1)
 
 
