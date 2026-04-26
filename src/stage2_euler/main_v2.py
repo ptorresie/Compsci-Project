@@ -1,5 +1,5 @@
-from compute_euler import compute_euler
-from plot_euler import plot
+from stage2_euler.compute_euler import compute_euler
+from stage2_euler.plot_euler import plot
 
 # --- SAFE INPUT FUNCTION ---
 def get_int(prompt):

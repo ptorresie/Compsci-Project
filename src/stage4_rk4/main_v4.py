@@ -1,5 +1,5 @@
-from compute_rk4 import compute_rk4
-from plot_rk4 import plot
+from stage4_rk4.compute_rk4 import compute_rk4
+from stage4_rk4.plot_rk4 import plot
 
 # --- SAFE INPUT FUNCTION ---
 def get_int(prompt):

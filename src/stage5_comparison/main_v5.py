@@ -1,11 +1,11 @@
 import numpy as np
 
-from src.stage5_comparison.compare_methods import compare_methods
+from stage5_comparison.compare_methods import compare_methods
 
-from src.stage1_analytical.compute_analytical import compute_psi
-from src.stage2_euler.compute_euler import compute_euler
-from src.stage3_euler_improved.compute_euler_improved import compute_euler_improved
-from src.stage4_rk4.compute_rk4 import compute_rk4
+from stage1_analytical.compute_analytical import compute_psi
+from stage2_euler.compute_euler import compute_euler
+from stage3_euler_improved.compute_euler_improved import compute_euler_improved
+from stage4_rk4.compute_rk4 import compute_rk4
 
 
 def run_comparison(params):

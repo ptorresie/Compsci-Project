@@ -1,5 +1,5 @@
-from compute_analytical import compute_psi
-from plot_analytical import plot
+from stage1_anayltical.compute_analytical import compute_psi
+from stage1_anañytical.plot_analytical import plot
 
 # --- SAFE INPUT FUNCTION ---
 def get_int(prompt):
