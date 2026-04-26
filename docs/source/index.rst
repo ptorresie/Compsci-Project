@@ -3,17 +3,25 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Quantum Numerical Methods Project documentation
-===============================================
+Quantum Numerical Methods Project
+=================================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+
+This documentation presents numerical methods for solving
+the 1D infinite potential well problem in quantum mechanics.
+
+We compare analytical and numerical approaches, including
+Euler, Improved Euler, and Runge-Kutta methods.
 
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   overview
+   mathematics
+   methods
+   results
+   usage
    modules
 
