@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 def plot(data, chosen_n):
-     """
+    """
     Plot the Euler solution ψ(x) for a selected quantum number.
 
     Parameters
