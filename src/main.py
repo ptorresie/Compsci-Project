@@ -8,6 +8,7 @@ from src.stage2_euler.compute_euler import compute_euler
 from src.stage3_euler_improved.compute_euler_improved import compute_euler_improved
 from src.stage4_rk4.compute_rk4 import compute_rk4
 
+print_banner()
 
 # --- SAFE INPUT FUNCTIONS ---
 def get_int(prompt):
