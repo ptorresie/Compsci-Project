@@ -11,6 +11,17 @@ def get_int(prompt):
 
 
 def main():
+     """
+    Execute the Euler method pipeline.
+
+    Workflow:
+    1. Computes ψ(x) using the Euler method
+    2. Prompts user to select a quantum number n
+    3. Plots the corresponding wave function
+
+    This function serves as an interactive entry point
+    for testing and visualizing the Euler approximation.
+    """
     try:
         # Step 1: compute data
         data = compute_euler()

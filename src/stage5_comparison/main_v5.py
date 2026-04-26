@@ -7,43 +7,23 @@ from src.stage2_euler.compute_euler import compute_euler
 from src.stage3_euler_improved.compute_euler_improved import compute_euler_improved
 from src.stage4_rk4.compute_rk4 import compute_rk4
 
-# --- SAFE INPUT FUNCTIONS ---
-def get_int(prompt):
-    while True:
-        try:
-            return int(input(prompt))
-        except ValueError:
-            print("Invalid input: please enter an integer.")
 
+def run_comparison(params):
+    """
+    Run full numerical simulation and comparison.
 
-def get_float(prompt):
-    while True:
-        try:
-            return float(input(prompt))
-        except ValueError:
-            print("Invalid input: please enter a number.")
+    Parameters
+    ----------
+    params : dict
+        Contains:
+        n_start, n_end, n_step, L, h, num_steps, z0, psi0
 
+    Returns
+    -------
+    dict or None
+        Comparison results or None if failure
+    """
 
-def get_positive_int(prompt):
-    while True:
-        value = get_int(prompt)
-        if value <= 0:
-            print("Value must be greater than 0.")
-        else:
-            return value
-
-
-def get_positive_float(prompt):
-    while True:
-        value = get_float(prompt)
-        if value <= 0:
-            print("Value must be greater than 0.")
-        else:
-            return value
-
-def main():
-    
-    # --- STATUS TRACKER ---
     status = {
         "Analytical": True,
         "Euler": True,
@@ -53,30 +33,21 @@ def main():
     }
 
     try:
-        # --- USER INPUT (SAFE) ---
-        n_start = get_int("Enter starting n: ")
-        n_end = get_int("Enter ending n: ")
-
-        while n_start > n_end:
-            print("n_start must be <= n_end")
-            n_start = get_int("Enter starting n: ")
-            n_end = get_int("Enter ending n: ")
-
-        n_step = get_positive_int("Enter step for n: ")
-        L = get_positive_float("Enter well length L: ")
-
-        h = get_positive_float("Enter step size h: ")
-        num_steps = get_positive_int("Enter number of steps: ")
-
-        z0 = get_float("Enter z0: ")
-        psi0 = get_float("Enter psi0: ")
+        # unpack parameters
+        n_start = params["n_start"]
+        n_end = params["n_end"]
+        n_step = params["n_step"]
+        L = params["L"]
+        h = params["h"]
+        num_steps = params["num_steps"]
+        z0 = params["z0"]
+        psi0 = params["psi0"]
 
         n_values = np.arange(n_start, n_end + 1, n_step)
 
         # --- COMPUTE ---
         data_analytical = compute_psi(L=L, dx=h, n_values=n_values)
         if data_analytical is None:
-            print("Analytical computation failed.")
             status["Analytical"] = False
 
         data_euler = compute_euler({
@@ -118,45 +89,19 @@ def main():
         if data_rk4 is None:
             status["RK4"] = False
 
-        # --- CHECK COMPUTATIONS ---
+        # --- COMPARE ---
         if any(d is None for d in [data_analytical, data_euler, data_euler_improved, data_rk4]):
-            print("One or more methods failed. Skipping comparison.")
             status["Comparison"] = False
-        else:
-            # --- COMPARE ---
-            results = compare_methods(
-                data_analytical,
-                data_euler,
-                data_euler_improved,
-                data_rk4
-            )
+            return None
 
-            if results is None or len(results) == 0:
-                print("Comparison failed or returned no results.")
-                status["Comparison"] = False
-            else:
-                # --- PRINT RESULTS ---
-                print("\n=== Comparison Results ===")
+        results = compare_methods(
+            data_analytical,
+            data_euler,
+            data_euler_improved,
+            data_rk4
+        )
 
-                for n, methods in results.items():
-                    print(f"\n{n}:")
-                    for method, stats in methods.items():
-                        print(f"  {method}:")
-                        print(f"    Std Dev: {stats['std']:.6f}")
-                        print(f"    Std Error: {stats['stderr']:.6f}")
+        return results
 
-        # --- FINAL SUMMARY ---
-        print("\n=== Execution Summary ===")
-
-        for method, ok in status.items():
-            if ok:
-                print(f"✔ {method}: OK")
-            else:
-                print(f"⚠ {method}: Failed or unstable")
-
-    except Exception as e:
-        print(f"Unexpected error in main_v5: {e}")
-
-
-if __name__ == "__main__":
-    main()
+    except Exception:
+        return None

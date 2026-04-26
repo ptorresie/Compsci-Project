@@ -36,6 +36,27 @@ def get_positive_int(prompt):
             return value
 
 def compute_rk4(data=None):
+    """
+    Compute ψ(x) using the Runge-Kutta 4th order (RK4) method.
+
+    RK4 is a high-accuracy numerical integration technique that
+    evaluates multiple intermediate slopes to produce a stable
+    and precise solution.
+
+    Parameters
+    ----------
+    data : dict, optional
+        Same structure as previous compute functions
+
+    Returns
+    -------
+    pandas.DataFrame or None
+
+    Notes
+    -----
+    RK4 provides the best accuracy among implemented methods,
+    at the cost of increased computation time.
+    """
     try:
         # --- INPUT HANDLING ---
         if data is None:

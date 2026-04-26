@@ -1,6 +1,18 @@
 import matplotlib.pyplot as plt
 
 def plot(data, chosen_n):
+    """
+    Plot ψ(x) computed using RK4.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+    chosen_n : int
+
+    Returns
+    -------
+    None
+    """
     column_name = f"n={chosen_n}"
 
     if column_name not in data.columns:

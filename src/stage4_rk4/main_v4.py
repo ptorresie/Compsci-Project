@@ -11,6 +11,14 @@ def get_int(prompt):
 
 
 def main():
+    """
+    Execute the RK4 pipeline.
+
+    Steps:
+    1. Compute ψ(x) using RK4
+    2. Ask user for n
+    3. Plot result
+    """
     try:
         # Step 1: compute data
         data = compute_rk4()

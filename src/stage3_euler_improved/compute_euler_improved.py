@@ -35,7 +35,29 @@ def get_positive_int(prompt):
             return value
 
 def compute_euler_improved(data=None):
-     try:
+    """
+    Compute ψ(x) using the Improved Euler (Heun) method.
+
+    This method improves upon the standard Euler method by using
+    a predictor-corrector approach, reducing truncation error
+    and improving stability.
+
+    Parameters
+    ----------
+    data : dict, optional
+        Same structure as compute_euler input
+
+    Returns
+    -------
+    pandas.DataFrame or None
+        Computed ψ(x) values for each n
+
+    Notes
+    -----
+    Provides better accuracy than Euler while maintaining
+    relatively low computational cost.
+    """
+    try:
         # --- INPUT HANDLING ---
         if data is None:
             n_start = get_int("Enter starting n: ")
@@ -130,7 +152,7 @@ def compute_euler_improved(data=None):
 
         return df
 
-     except Exception as e:
+    except Exception as e:
         print(f"Unexpected error in compute_euler_improved: {e}")
         return None
 

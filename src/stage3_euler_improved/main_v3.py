@@ -11,6 +11,15 @@ def get_int(prompt):
 
 
 def main():
+    """
+    Execute the Improved Euler method pipeline.
+
+    Steps:
+    1. Compute ψ(x)
+    2. Display computed data (optional)
+    3. Allow user to select n
+    4. Plot the result
+    """
     try:
         # Step 1: compute data
         data = compute_euler_improved()

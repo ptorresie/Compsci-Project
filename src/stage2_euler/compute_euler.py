@@ -36,32 +36,59 @@ def get_positive_int(prompt):
             return value
 
 def compute_euler(data=None):
+    """
+    Compute the wave function ψ(x) using the Euler method.
+
+    This function numerically solves the second-order Schrödinger equation
+    by converting it into a system of first-order differential equations.
+    The Euler method is used as a first-order approximation scheme.
+
+    Parameters
+    ----------
+    data : dict, optional
+        Dictionary containing input parameters:
+        - n_start, n_end, n_step
+        - delta_x (step size)
+        - num_steps
+        - L (well length)
+        - z_0, psi_0 (initial conditions)
+
+        If None, values are requested interactively.
+
+    Returns
+    -------
+    pandas.DataFrame or None
+        DataFrame containing:
+        - x values
+        - ψ(x) for each quantum number n
+
+        Returns None if computation fails.
+
+    Notes
+    -----
+    Euler method is simple but introduces significant numerical error,
+    especially for oscillatory systems like quantum wave functions.
+    """
     try:
         # --- INPUT HANDLING ---
         if data is None:
-            try:
-                n_start = get_positive_int("Enter starting n: ")
-                n_end = get_positive_int("Enter ending n: ")
-                n_step = get_positive_int("Enter step for n: ")
-                delta_x = get_positive_float("Enter the step length Δx: ")
-                num_steps = get_positive_int("Enter the number of steps: ")
-                L = get_positive_float("Enter the well length L: ")
-                z_0 = get_float("Enter the initial value z_0: ")
-                psi_0 = get_float("Enter the initial value psi_0: ")
-            except ValueError:
-                raise ValueError("Invalid input: please enter numeric values")
+            n_start = get_positive_int("Enter starting n: ")
+            n_end = get_positive_int("Enter ending n: ")
+            n_step = get_positive_int("Enter step for n: ")
+            delta_x = get_positive_float("Enter the step length Δx: ")
+            num_steps = get_positive_int("Enter the number of steps: ")
+            L = get_positive_float("Enter the well length L: ")
+            z_0 = get_float("Enter the initial value z_0: ")
+            psi_0 = get_float("Enter the initial value psi_0: ")
         else:
-            try:
-                n_start = data["n_start"]
-                n_end = data["n_end"]
-                n_step = data["n_step"]
-                delta_x = data["delta_x"]
-                num_steps = data["num_steps"]
-                L = data["L"]
-                z_0 = data["z_0"]
-                psi_0 = data["psi_0"]
-            except KeyError as e:
-                raise KeyError(f"Missing key in data dictionary: {e}")
+            n_start = data["n_start"]
+            n_end = data["n_end"]
+            n_step = data["n_step"]
+            delta_x = data["delta_x"]
+            num_steps = data["num_steps"]
+            L = data["L"]
+            z_0 = data["z_0"]
+            psi_0 = data["psi_0"]
 
         # --- VALIDATION ---
         if n_step <= 0:
