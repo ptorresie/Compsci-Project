@@ -1,12 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src.stage5_comparison.main_v5 import run_comparison
+from stage5_comparison.main_v5 import run_comparison
 
-from src.stage1_analytical.compute_analytical import compute_psi
-from src.stage2_euler.compute_euler import compute_euler
-from src.stage3_euler_improved.compute_euler_improved import compute_euler_improved
-from src.stage4_rk4.compute_rk4 import compute_rk4
+from stage1_analytical.compute_analytical import compute_psi
+from stage2_euler.compute_euler import compute_euler
+from stage3_euler_improved.compute_euler_improved import compute_euler_improved
+from stage4_rk4.compute_rk4 import compute_rk4
 
 print_banner()
 

@@ -11,7 +11,7 @@ def get_int(prompt):
 
 
 def main():
-     """
+    """
     Execute the Euler method pipeline.
 
     Workflow:
