@@ -12,76 +12,95 @@ def compare_methods(data_analytical, data_euler, data_euler_improved, data_rk4):
     for selected n values: min, median, max
     """
 
-    results = {}
+    try:
+        # --- CHECK INPUT DATA ---
+        if any(d is None for d in [data_analytical, data_euler, data_euler_improved, data_rk4]):
+            print("Error: one or more input datasets are None")
+            return None
 
-    # --- Extract n columns ---
-    n_columns_all = [col for col in data_analytical.columns if col != "x"]
+        results = {}
 
-    n_numbers = [int(col.split("=")[1]) for col in n_columns_all]
-    n_numbers_sorted = sorted(n_numbers)
+        # --- Extract n columns ---
+        n_columns_all = [col for col in data_analytical.columns if col != "x"]
 
-    # Select representative n values
-    n_min = n_numbers_sorted[0]
-    n_max = n_numbers_sorted[-1]
-    n_median = n_numbers_sorted[len(n_numbers_sorted) // 2]
+        if len(n_columns_all) == 0:
+            print("Error: no n columns found in analytical data")
+            return None
 
-    selected_n = [n_min, n_median, n_max]
-    n_columns = [f"n={n}" for n in selected_n]
+        n_numbers = [int(col.split("=")[1]) for col in n_columns_all]
+        n_numbers_sorted = sorted(n_numbers)
 
-    print("\nSelected n values:", selected_n)
+        # Select representative n values
+        n_min = n_numbers_sorted[0]
+        n_max = n_numbers_sorted[-1]
+        n_median = n_numbers_sorted[len(n_numbers_sorted) // 2]
 
-    # --- Compute stats per method ---
-    for col in n_columns:
-        psi_analytical = data_analytical[col].values
-        psi_euler = data_euler[col].values
-        psi_euler_improved = data_euler_improved[col].values
-        psi_rk4 = data_rk4[col].values
+        selected_n = [n_min, n_median, n_max]
+        n_columns = [f"n={n}" for n in selected_n]
 
-        min_len = min(
-            len(psi_analytical),
-            len(psi_euler),
-            len(psi_euler_improved),
-            len(psi_rk4)
-        )
+        print("\nSelected n values:", selected_n)
 
-        psi_analytical = psi_analytical[:min_len]
+        # --- Compute stats per method ---
+        for col in n_columns:
+            try:
+                psi_analytical = data_analytical[col].values
+                psi_euler = data_euler[col].values
+                psi_euler_improved = data_euler_improved[col].values
+                psi_rk4 = data_rk4[col].values
+            except KeyError:
+                print(f"Warning: column {col} not found in one dataset")
+                continue
 
-        # --- Errors ---
-        error_euler = psi_euler[:min_len] - psi_analytical
-        error_euler_improved = psi_euler_improved[:min_len] - psi_analytical
-        error_rk4 = psi_rk4[:min_len] - psi_analytical
+            min_len = min(
+                len(psi_analytical),
+                len(psi_euler),
+                len(psi_euler_improved),
+                len(psi_rk4)
+            )
 
-        # --- Remove invalid values ---
-        def clean(arr):
-            return arr[np.isfinite(arr)]
+            if min_len == 0:
+                print(f"Warning: empty data for {col}")
+                continue
 
-        error_euler = clean(error_euler)
-        error_euler_improved = clean(error_euler_improved)
-        error_rk4 = clean(error_rk4)
+            psi_analytical = psi_analytical[:min_len]
 
-        # --- Compute stats ---
-        def compute_stats(error):
-            std = np.std(error)
-            stderr = std / np.sqrt(len(error))
-            return std, stderr
+            # --- Errors ---
+            error_euler = psi_euler[:min_len] - psi_analytical
+            error_euler_improved = psi_euler_improved[:min_len] - psi_analytical
+            error_rk4 = psi_rk4[:min_len] - psi_analytical
 
-        std_euler, stderr_euler = compute_stats(error_euler)
-        std_euler_improved, stderr_euler_improved = compute_stats(error_euler_improved)
-        std_rk4, stderr_rk4 = compute_stats(error_rk4)
+            # --- Clean invalid values ---
+            def clean(arr):
+                arr = arr[np.isfinite(arr)]
+                return arr
 
-        results[col] = {
-            "Euler": {
-                "std": std_euler,
-                "stderr": stderr_euler
-            },
-            "Euler Improved": {
-                "std": std_euler_improved,
-                "stderr": stderr_euler_improved
-            },
-            "RK4": {
-                "std": std_rk4,
-                "stderr": stderr_rk4
+            error_euler = clean(error_euler)
+            error_euler_improved = clean(error_euler_improved)
+            error_rk4 = clean(error_rk4)
+
+            # --- Check empty after cleaning ---
+            if len(error_euler) == 0 or len(error_euler_improved) == 0 or len(error_rk4) == 0:
+                print(f"Warning: no valid data after cleaning for {col}")
+                continue
+
+            # --- Compute stats ---
+            def compute_stats(error):
+                std = np.std(error)
+                stderr = std / np.sqrt(len(error))
+                return std, stderr
+
+            std_euler, stderr_euler = compute_stats(error_euler)
+            std_euler_improved, stderr_euler_improved = compute_stats(error_euler_improved)
+            std_rk4, stderr_rk4 = compute_stats(error_rk4)
+
+            results[col] = {
+                "Euler": {"std": std_euler, "stderr": stderr_euler},
+                "Euler Improved": {"std": std_euler_improved, "stderr": stderr_euler_improved},
+                "RK4": {"std": std_rk4, "stderr": stderr_rk4}
             }
-        }
 
-    return results
+        return results
+
+    except Exception as e:
+        print(f"Unexpected error in compare_methods: {e}")
+        return None
