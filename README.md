@@ -33,7 +33,6 @@ cd Compsci-Project
 
 2. Create and activate the environment:
 
-bash
 conda env create -f environment.yml
 conda activate <env_name>
 
