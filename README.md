@@ -40,10 +40,35 @@ conda activate <env_name>
 
 ## Usage
 
-Run the program from the project root:
+Run the program from the project root (inside the Compsci-Project folder):
 
-(from the Compsci-Project level):
+python -m src.main
+
+If you encounter import issues:
+
+macOS / Linux
 PYTHONPATH=. python -m src.main
+
+Windows (PowerShell)
+$env:PYTHONPATH="."
+python -m src.main
+
+---
+
+## Documentation (Sphinx)
+
+This project includes documentation generated using Sphinx.
+
+To build the documentation navigate to the docs folder:
+cd docs
+
+Then build the HTML documentation:
+python -m sphinx -b html source build
+
+You can open it in your browser by double-clicking or running:
+
+start build\index.html    # Windows
+open build/index.html     # macOS
 
 ---
 
