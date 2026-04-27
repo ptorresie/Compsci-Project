@@ -1,12 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from banner import print_banner
-from stage5_comparison.main_v5 import run_comparison
-from stage1_analytical.compute_analytical import compute_psi
-from stage2_euler.compute_euler import compute_euler
-from stage3_euler_improved.compute_euler_improved import compute_euler_improved
-from stage4_rk4.compute_rk4 import compute_rk4
+from src.banner import print_banner
+from src.stage5_comparison.main_v5 import run_comparison
+from src.stage1_analytical.compute_analytical import compute_psi
+from src.stage2_euler.compute_euler import compute_euler
+from src.stage3_euler_improved.compute_euler_improved import compute_euler_improved
+from src.stage4_rk4.compute_rk4 import compute_rk4
 
 
 # --- SAFE INPUT FUNCTIONS ---
@@ -46,7 +46,7 @@ def get_positive_float(prompt):
 
 def main():
     print_banner()
-    print("=== Quantum Solver ===\n")
+    print("\n\n=== Quantum Solver ===\n")
 
     # --- INPUT ---
     n_start = get_int("Enter starting n: ")
